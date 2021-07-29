@@ -3,7 +3,7 @@ import { renderFileToString } from "https://deno.land/x/dejs/mod.ts";
 
 export const login = async (ctx: RouterContext) => {
     ctx.response.body = await renderFileToString(
-      `${Deno.cwd()}/public/login.ejs`,
+      `${Deno.cwd()}/public/login.ejs`,  //renders login page
       {
         error: false,
       },
@@ -12,8 +12,8 @@ export const login = async (ctx: RouterContext) => {
 
 
 
-  export const css = async (ctx: RouterContext) => {
-    await send(ctx, ctx.request.url.pathname, {
+  export const staticfiles = async (ctx: RouterContext) => {
+    await send(ctx, ctx.request.url.pathname, {//renders static files
         root: Deno.cwd(),
       });
   }

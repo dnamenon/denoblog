@@ -6,7 +6,7 @@
 
   }  from "https://deno.land/x/oak/mod.ts";
 
-  import {login,css} from "./routes.ts"; // handler functions for router stored here
+  import {login,staticfiles} from "./routes.ts"; // handler functions for router stored here
 
 
 
@@ -15,7 +15,7 @@ const router = new Router();
 
 router
   .get("/login",login) // directs routes to handlers
-  .get("/public/css/:path+",css)
+  .get("/public/css/:path+",staticfiles)
 
 
 

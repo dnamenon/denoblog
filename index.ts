@@ -4,17 +4,18 @@
     Router,
     RouterContext,
 
-  }  from "https://deno.land/x/oak/mod.ts";
+  }  from "https://deno.land/x/oak@v8.0.0/mod.ts";
 
-  import {login,staticfiles} from "./routes.ts"; // handler functions for router stored here
+  import {login,postLogin,staticfiles} from "./routes.ts"; // handler functions for router stored here
 
 
 
 const app = new Application();
 const router = new Router();
 
-router
-  .get("/login",login) // directs routes to handlers
+router// directs routes to handlers
+  .get("/login",login) 
+  .post("/login",postLogin)
   .get("/public/css/:path+",staticfiles)
 
 

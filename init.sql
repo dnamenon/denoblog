@@ -10,4 +10,7 @@ CREATE TABLE posts ( post_id SERIAL PRIMARY KEY, author_id integer not null,titl
 
 grant select,insert,update,delete on users to denouser;
 
+grant select,USAGE on sequence users_id_seq to denouser;
+
 grant select,insert,update,delete on posts to denouser;
+

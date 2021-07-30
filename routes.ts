@@ -1,6 +1,6 @@
 import { RouterContext, send } from "https://deno.land/x/oak@v8.0.0/mod.ts";
 import { renderFileToString } from "https://deno.land/x/dejs@0.10.1/mod.ts";
-import * as bcrypt from "https://deno.land/x/crypt@v0.1.0/bcrypt.ts";
+import * as bcrypt from "https://deno.land/x/bcrypt@v0.2.4/mod.ts";
 import { MultipartReader } from "https://deno.land/std/mime/mod.ts";
 import { dblogin, dbregister } from "./db_execs.ts";
 import { Post } from "./post.ts";
@@ -26,14 +26,15 @@ export const postLogin = async (ctx: RouterContext) => { //handles login post re
 
     if (user_details != null) {
       let hashed_password = user_details[0] as string;
+      console.log (password + " " + hashed_password)
 
       const result = await bcrypt.compare(password, hashed_password);
-
+        console.log(result);
       if (result) {
         let user_id = user_details[1];
-        console.log(user_id + "login success");
+        
         ctx.cookies.set("user", user_id as string);
-        ctx.response.redirect("/user/:id");
+        ctx.response.redirect("/user/:" + user_id);
       }
     } else {
       console.log("login failed");
@@ -107,8 +108,6 @@ export const userhome = async(ctx:RouterContext) =>{
     const page_id = page_id_raw.substring(1,);
     const cookie_id = ctx.cookies.get("user");
 
-    console.log(page_id + " " + cookie_id);
-
     if(cookie_id === undefined){
         ctx.response.body = await renderFileToString(
             `${Deno.cwd()}/public/login.ejs`,
@@ -133,7 +132,9 @@ export const userhome = async(ctx:RouterContext) =>{
 
 
     }else{
-        ctx.response.redirect("/user/:"+ cookie_id);
+        ctx.response.status = 404;
+        ctx.response.body = {msg:"access denied"};
+        return;
     }
 
 
@@ -151,7 +152,7 @@ export const createpost=  async(ctx:RouterContext) =>{
 
 export const logout = async (ctx: RouterContext) => {
   ctx.cookies.delete("user");
-  ctx.response.redirect("/"); //delete cookies, logout
+  ctx.response.redirect("/login"); //delete cookies, logout
 };
 
 export const staticfiles = async (ctx: RouterContext) => {

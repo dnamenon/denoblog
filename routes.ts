@@ -35,6 +35,14 @@ export const postLogin = async (ctx: RouterContext) => { //handles login post re
         
         ctx.cookies.set("user", user_id as string);
         ctx.response.redirect("/user/:" + user_id);
+      }else {
+        console.log("login failed");
+        ctx.response.body = await renderFileToString(
+          `${Deno.cwd()}/public/login.ejs`,
+          {
+            error: "Incorrect password or username",
+          },
+        );
       }
     } else {
       console.log("login failed");

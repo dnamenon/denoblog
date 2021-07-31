@@ -78,7 +78,7 @@ export const dbcreatepost = async (p: Post) => {
   try {
     const client = await pool.connect();
     const result = await client.queryObject(
-      "INSERT INTO posts (author_id, title, content, published_at, VALUES ($1, $2, $3, $4)", // inserts new post info
+      "INSERT INTO posts (author_id, title, content, published_at) VALUES ($1, $2, $3, $4)", // inserts new post info
       p.author_id,
       p.title,
       p.content,
@@ -88,6 +88,7 @@ export const dbcreatepost = async (p: Post) => {
     console.log(result);
     return true;
   } catch (error) {
+    console.log(error);
     return false;
   }
 };

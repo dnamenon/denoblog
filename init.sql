@@ -14,3 +14,5 @@ grant select,USAGE on sequence users_id_seq to denouser;
 
 grant select,insert,update,delete on posts to denouser;
 
+grant select,USAGE on sequence posts_post_id_seq to denouser;
+

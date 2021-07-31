@@ -11,17 +11,17 @@
 
 <body>
     <h1>
-       Manage your posts and profile.
+        Manage your posts and profile.
     </h1>
     <form enctype="multipart/form-data" action="/create_post" method="POST">
-        <label>Title<input type ="text" name = "title"></label>
+        <label>Title<input type="text" name="title"></label>
 
         <label>Upload Markdown Files<input type="file" name="file" accept=".md" /></label>
 
         <label><input type="submit" value="Upload" /></label>
 
     </form>
-    <div class = "post-list">
+    <div class="post-list">
         <h2>Your posts</h2>
 
 
@@ -30,17 +30,23 @@
 
     <div class="profile-details">
         <h2>Edit Your Profile</h2>
-        <label>Bio:<input type ="text" name = "bio"></label>
+        <form enctype="multipart/form-data" action="/create_post" method="POST">
+            <label>Bio:<input type="text" name="bio"></label>
 
-        <label>Instagram<input type="text" name="instagram" /></label>
-        <label>Twitter<input type="text" name="twitter" /></label>
-        <label>Github<input type="text" name="github" /></label>
-        <label><input type="submit" value="Update" /></label>
-        
+            <label>Instagram<input type="text" name="instagram" /></label>
+            <label>Twitter<input type="text" name="twitter" /></label>
+            <label>Github<input type="text" name="github" /></label>
+            <label><input type="submit" value="Update" /></label>
 
+        </form>
     </div>
-   
-    </form>
+
+
+    <div>
+        <a href="/logout" <>Logout</a>
+    </div>
+
+
 </body>
 
 </html>

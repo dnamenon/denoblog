@@ -1,9 +1,9 @@
 import { RouterContext, send } from "https://deno.land/x/oak@v8.0.0/mod.ts";
 import { renderFileToString } from "https://deno.land/x/dejs@0.10.1/mod.ts";
 import * as bcrypt from "https://deno.land/x/bcrypt@v0.2.4/mod.ts";
-import { MultipartReader } from "https://deno.land/std/mime/mod.ts";
-import { dblogin, dbregister } from "./db_execs.ts";
+import { dblogin, dbregister ,dbcreatepost} from "./db_execs.ts";
 import { Post } from "./post.ts";
+
 
 export const login = async (ctx: RouterContext) => {
   ctx.response.body = await renderFileToString(
@@ -151,14 +151,68 @@ export const userhome = async(ctx:RouterContext) =>{
 
 
 export const createpost=  async(ctx:RouterContext) =>{
-    const formdata = await ctx.request.body({ type: "form" });
-    const values = await formdata.value;
+    const cookie_id = ctx.cookies.get("user");
+
+    if(cookie_id === undefined){
+        ctx.response.body = await renderFileToString(
+            `${Deno.cwd()}/public/login.ejs`,
+            {
+              error: "please login to access this page",
+            },
+          );
+
+    }
+
+    
+
+    const formdata = await ctx.request.body({ type: "form-data" });
+    const values = await formdata.value.read();
+    const date = new Date().toLocaleString();
+    const author_id = cookie_id as string;
+    
+    const title = values.fields.title;
+    const file_info = values.files;
+
+    if(file_info === undefined) return;
+    const content_file = file_info[0].filename;
+
+    const file = await Deno.open(content_file as string);
+    const decoder = new TextDecoder('utf-8');
+    const content = decoder.decode(await Deno.readAll(file));
+
+
+    const p:Post = {
+        post_id:0,
+        author_id:author_id,
+        title:title,
+        content:content,
+        published:date
+        
+    }
+  if(await dbcreatepost(p)){
+      console.log("post created");
+
+    ctx.response.redirect("/user/:"+cookie_id);
+
+
+
+  }else{
+
+    ctx.response.status = 500;
+        ctx.response.body = {msg:"post creation failed"};
+        return;
+
+  }
+
+
+
 
 
 }
 
 
 export const logout = async (ctx: RouterContext) => {
+
   ctx.cookies.delete("user");
   ctx.response.redirect("/login"); //delete cookies, logout
 };

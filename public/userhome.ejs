@@ -23,7 +23,26 @@
     </form>
     <div class="post-list">
         <h2>Your posts</h2>
-
+        <% if (error) { %>
+            <div class="err">
+                <%= error %>
+            </div>
+            <% } %>
+            <table class ="postlist"">
+            <% if (posts) { %>
+                <% for(var i=0; i < posts.length; i++) { %>
+                    <tr>
+                      <td>title: <%= posts[i][2] %>  </td>
+                      <td>published at: <%= posts[i][4] %>  </td>
+                      <td><a href=<%= "deletepost/:" + posts[i][1] %>> delete post</a></td>
+                      
+                      
+                    </tr>
+                 <% } %>
+                
+            <% } %>
+        </table>
+            
 
     </div>
 

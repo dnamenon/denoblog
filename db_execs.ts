@@ -61,12 +61,12 @@ export const dbedituserprofile = async (bio:string,socials: Array<String>,user_i
 };
 
 
-export const dbaccesspost = async (userid: number) => {
+export const dbaccesspost = async (user_id: string) => {
 
     const client = await pool.connect();
     const result = await client.queryArray(
-      "Select * from  posts where author_id =$1)",
-      userid,
+      "Select * from  posts where author_id =$1",
+      user_id
     ); // queries password from username
 
     client.release();
@@ -93,12 +93,12 @@ export const dbcreatepost = async (p: Post) => {
   }
 };
 
-export const dbdeletepost = async (p: Post) => {
+export const dbdeletepost = async (postid: string) => {
  
     const client = await pool.connect();
     const result = await client.queryArray(
       "DELETE from posts where post_id =$1",
-      p.post_id,
+      postid,
     ); // deletes post
     client.release();
     return result;

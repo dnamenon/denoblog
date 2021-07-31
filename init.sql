@@ -1,6 +1,6 @@
 CREATE user denouser WITH password 'absx34';
 
-CREATE database creative_project; \connect creative_projects;
+CREATE database creative_project; \connect creative_project;
 
 CREATE TABLE users( id SERIAL PRIMARY KEY, username varchar(50) not null UNIQUE, password char(60) not null, bio text not null, socials varchar(160)[] not null );
 

@@ -1,0 +1,19 @@
+// @use 'base';
+// $form_width: 50%;
+// $full_width: 100%;
+// $center_left: $full_width / 2 - $form_width / 2;
+// form {
+//   width: $form_width;
+//   text-align: center;
+// }
+// .center{
+//   position: absolute; 
+//   width: 100%; 
+//   text-align: center; 
+//   left: $center_left;
+// }
+// h1{
+//   text-align: center;
+// }
+
+@use 'login';

@@ -1,7 +1,25 @@
-$font-stack:    Helvetica, sans-serif;
-$primary-color: rgb(150, 176, 231);
-
-body {
-  font: 100% $font-stack;
-  color: $primary-color;
+@use 'base';
+$form_width: 30%;
+$full_width: 100%;
+$center_left: $full_width / 2 - $form_width / 2;
+div{
+  form {
+    width: $form_width;
+    text-align: center;
+    button{
+      // border-color: base.$bg-color;
+      border-color: aqua;
+      border-width: 10em;
+    
+    }
+  }
+}
+.center{
+  position: fixed; 
+  width: 100%; 
+  text-align: center; 
+  left: $center_left;
+}
+h1{
+  text-align: center;
 }

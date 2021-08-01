@@ -1,9 +1,44 @@
-$font-stack:    Helvetica, sans-serif;
-$primary-color: rgb(150, 176, 231);
+$font-stack:    system-ui, sans-serif;
+$font-weight: lighter;
+$primary-color: rgb(31, 31, 31);
 $bg-color: #ffffff;
 
 body {
   font: 100% $font-stack;
   color: $primary-color;
   background-color: $bg-color;
+  font-weight: lighter;
+}
+
+.post-list{
+  font: 90% $font-stack;
+  color: $primary-color;
+  background-color: $bg-color;
+  font-weight: lighter;
+  
+
+  .postlist{
+    width: 100%; 
+    min-height: 25px; 
+    line-height: 25px; 
+    text-align: center; 
+    border-collapse: collapse;
+    display: inline-table;  
+    
+  }
+
+  form{
+    display: inline;
+    padding: 20px 20px;
+    box-sizing: border-box;
+    input {
+      height: 30px;
+    }
+    input [type=text]{
+      width: 50%;
+    }
+    input[type=button]{
+      width: 30%;
+    }
+  }
 }

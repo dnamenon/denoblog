@@ -1,70 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="/public/css/login.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href= "/public/css/login.css">  
+     <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    
+    <script src="https://classes.engineering.wustl.edu/cse330/content/calendar.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    
+    
     <title>user homepage</title>
 </head>
 
 <body>
-    <h1>
-        Manage your posts and profile.
-    </h1>
-    <form enctype="multipart/form-data" action="/create_post" method="POST">
-        <label>Title<input type="text" name="title"></label>
-
-        <label>Upload Markdown Files<input type="file" name="file" accept=".md" /></label>
-
-        <label><input type="submit" value="Upload" /></label>
-
-    </form>
-    <div class="post-list">
-        <h2>Your posts</h2>
-        <% if (error) { %>
-            <div class="err">
-                <%= error %>
-            </div>
-            <% } %>
-            <table class ="postlist"">
-            <% if (posts) { %>
-                <% for(var i=0; i < posts.length; i++) { %>
-                    <tr>
-                      <td>title: <%= posts[i][2] %>  </td>
-                      <td>published at: <%= posts[i][4] %>  </td>
-                      <td><a href=<%= "deletepost/:" + posts[i][1] %>> delete post</a></td>
-                      
-                      
-                    </tr>
-                 <% } %>
-                
-            <% } %>
-        </table>
+ <!-- html header -->
+ <!-- Bootstrap -->
+ <div class="container">
+    <header class="p-3 mb-3 border-bottom">
+        <div class="container">
+          <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+    
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+              <li><a id='headernav_blog' class="nav-link px-2 link-secondary" style="cursor: pointer;">Blog</a></li>
+              <li><a id='headernav_upload' class="nav-link px-2 link-dark" style="cursor: pointer;">Upload</a></li>
+              <li><a id='headernav_profile' class="nav-link px-2 link-dark" style="cursor: pointer;">Profile</a></li>
+            </ul>
             
+            <!-- Search Form -->
+            <!-- <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+              <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+            </form> -->
+    
+            <div class="dropdown text-end">
+              <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                <!-- Edit here for usename -->
+                Username 
+              </a>
+              <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
+                <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+    </header>
+
+    <div class="post-list" id="main_div">
+        
+
+
 
     </div>
 
+  
+        
 
-    <div class="profile-details">
-        <h2>Edit Your Profile</h2>
-        <form enctype="multipart/form-data" action="/create_post" method="POST">
-            <label>Bio:<input type="text" name="bio"></label>
+</div>
 
-            <label>Instagram<input type="text" name="instagram" /></label>
-            <label>Twitter<input type="text" name="twitter" /></label>
-            <label>Github<input type="text" name="github" /></label>
-            <label><input type="submit" value="Update" /></label>
-
-        </form>
-    </div>
+  <script>
+    //DOM 
+    function initialize(event){
+        render_main_div(cat=0);
+        
+    }
+    document.addEventListener("DOMContentLoaded", initialize, false);
+   
 
 
-    <div>
-        <a href="/logout" <>Logout</a>
-    </div>
 
+    function html_blog(){
+        return '<h2>Your posts</h2>\
+        <% if (error) { %>\
+            <div class="err">\
+                <%= error %>\
+            </div>\
+            <% } %>\
+            <table class ="postlist"">\
+            <% if (posts) { %>\
+                <tr>\
+                    <td style="font-weight: normal;">Title  </td>\
+                    <td style="font-weight: normal;">Published time  </td>\
+                    <td style="font-weight: normal;">Option</td>\
+                </tr>\
+                <% for(var i=0; i < posts.length; i++) { %>\
+                    <tr>\
+                        <td> <%= posts[i][2] %>  </td>\
+                        <td> <%= posts[i][4] %>  </td>\
+                        <td><a href=<%= "deletepost/:" + posts[i][1] %>> delete </a></td>\
+                    </tr>\
+                    <% } %>\
+            <% } %>\
+            </table>'
+    }
+    function html_upload(){
+        return '<h2>Upload Markdown Files</h2>\
+            <form class="upload_file" enctype="multipart/form-data" action="/create_post" method="POST">\
+            <input type="text" name="title" placeholder="Title">\
+            <input type="file" name="file" accept=".md">\
+            <input type="submit" value="Upload">\
+            </form>'
+    }
+
+    function html_profile(){
+        return '<div class="create_post">\
+            <h2>Edit Your Profile</h2>\
+            <form enctype="multipart/form-data" action="/create_post" method="POST">\
+                <br>\
+                <label>Bio: <input type="text" name="bio"></label>\
+                <br>\
+                <label>Instagram: <input type="text" name="instagram" /></label>\
+                <br>\
+                <label>Twitter: <input type="text" name="twitter" /></label>\
+                <br>\
+                <label>Github: <input type="text" name="github" /></label>\
+                <br><br>\
+                <label><input type="submit" value="Update" /></label>\
+            </form>\
+            </div>'
+    }
+
+    function render_main_div(cat=0){
+        $('[id^="headernav_"]').removeClass();
+        $('[id^="headernav_"]').addClass('nav-link px-2 link-dark');
+        if(cat == 0){
+            $('#headernav_blog').removeClass();
+            $('#headernav_blog').addClass("nav-link px-2 link-secondary");
+            $("#main_div").html("");
+            $("#main_div").html(html_blog());
+        }
+        else if(cat == 1){
+            $('#headernav_upload').removeClass();
+            $('#headernav_upload').addClass("nav-link px-2 link-secondary");
+            $("#main_div").html("");
+            $("#main_div").html(html_upload());
+        }
+        else if(cat == 2){
+            $('#headernav_profile').removeClass();
+            $('#headernav_profile').addClass("nav-link px-2 link-secondary");
+            $("#main_div").html("");
+            $("#main_div").html(html_profile());
+        }
+        else{
+            $("#main_div").html("<div class='err'> No Class Selected</div>");
+        }
+    }
+
+    $("#headernav_blog").off('click').on('click', function() {
+        render_main_div(cat=0);
+    });
+    $("#headernav_upload").off('click').on('click', function() {
+        render_main_div(cat=1);
+    });
+    $("#headernav_profile").off('click').on('click', function() {
+        render_main_div(cat=2);
+    });
+
+  </script>
 
 </body>
 

@@ -1,7 +1,37 @@
 body {
-  font: 100% Helvetica, sans-serif;
-  color: #96b0e7;
+  font: 100% system-ui, sans-serif;
+  color: #1f1f1f;
   background-color: #ffffff;
+  font-weight: lighter;
+}
+
+.post-list {
+  font: 90% system-ui, sans-serif;
+  color: #1f1f1f;
+  background-color: #ffffff;
+  font-weight: lighter;
+}
+.post-list .postlist {
+  width: 100%;
+  min-height: 25px;
+  line-height: 25px;
+  text-align: center;
+  border-collapse: collapse;
+  display: inline-table;
+}
+.post-list form {
+  display: inline;
+  padding: 20px 20px;
+  box-sizing: border-box;
+}
+.post-list form input {
+  height: 30px;
+}
+.post-list form input [type=text] {
+  width: 50%;
+}
+.post-list form input[type=button] {
+  width: 30%;
 }
 
 /*# sourceMappingURL=base.css.map */

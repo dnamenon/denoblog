@@ -47,6 +47,32 @@ export const dblogin = async (username: string) => {
 
 };
 
+export const dbgetusername = async (id: string) => {
+ 
+  const client = await pool.connect();
+  const result = await client.queryArray(
+    "Select username from  users where id =$1",
+    id,
+  ); // queries username from userid
+
+  client.release();
+  return result;
+
+};
+
+export const dbcheckpostbelongstouser = async (post_id: string) => {
+ 
+  const client = await pool.connect();
+  const result = await client.queryArray(
+    "Select author_id from posts where post_id =$1",
+    post_id,
+  ); // queries post author id from post id
+
+  client.release();
+  return result;
+
+};
+
 export const dbedituserprofile = async (bio:string,socials: Array<String>,user_id:string) => {
  
   const client = await pool.connect();

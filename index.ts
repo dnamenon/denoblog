@@ -9,7 +9,7 @@
   
 
 
-  import {login,postLogin,register,postRegister,userhome,createpost,staticfiles,logout} from "./routes.ts"; // handler functions for router stored here
+  import {login,postLogin,register,postRegister,userhome,createpost,deletepost,staticfiles,logout} from "./routes.ts"; // handler functions for router stored here
 
 
 
@@ -23,6 +23,7 @@ router// directs routes to handlers
   .post("/register",postRegister)
   .get("/user/:id",userhome) 
   .post("/create_post",createpost) 
+  .post("/delete_post",deletepost) 
   .get("/logout",logout)
   .get("/public/css/:path+",staticfiles)
 

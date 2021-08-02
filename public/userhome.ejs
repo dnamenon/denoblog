@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href= "/public/css/login.css">  
+    <link rel="stylesheet" type="text/css" href= "/public/css/base.css">  
      <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
@@ -38,7 +38,11 @@
             <div class="dropdown text-end">
               <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                 <!-- Edit here for usename -->
-                Username 
+                <% if (posts) { %>
+                    <%= username %>
+
+                    <% } %>
+                
               </a>
               <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
                 <li><a class="dropdown-item" href="/logout">Sign out</a></li>
@@ -78,7 +82,7 @@
                 <%= error %>\
             </div>\
             <% } %>\
-            <table class ="postlist"">\
+            <table class ="postlist">\
             <% if (posts) { %>\
                 <tr>\
                     <td style="font-weight: normal;">Title  </td>\
@@ -89,7 +93,7 @@
                     <tr>\
                         <td> <%= posts[i][2] %>  </td>\
                         <td> <%= posts[i][4] %>  </td>\
-                        <td><a href=<%= "deletepost/:" + posts[i][1] %>> delete </a></td>\
+                        <td><form id ="delete" action="/delete_post" method="post"><button type = submit value=<%=posts[i][0] %> name ="delete"> delete </button></form></td>\
                     </tr>\
                     <% } %>\
             <% } %>\

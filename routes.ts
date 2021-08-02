@@ -1,8 +1,9 @@
 import { RouterContext, send } from "https://deno.land/x/oak@v8.0.0/mod.ts";
 import { renderFileToString } from "https://deno.land/x/dejs@0.10.1/mod.ts";
 import * as bcrypt from "https://deno.land/x/bcrypt@v0.2.4/mod.ts";
-import { dbcreatepost, dblogin, dbregister,dbaccesspost } from "./db_execs.ts";
+import { dbcreatepost, dblogin, dbregister,dbaccesspost,dbgetusername,dbcheckpostbelongstouser,dbdeletepost } from "./db_execs.ts";
 import { Post } from "./post.ts";
+
 
 
 export const login = async (ctx: RouterContext) => {
@@ -109,7 +110,11 @@ export const userhome = async (ctx: RouterContext) => {
   const page_id_raw = ctx.params.id;
   if (page_id_raw === undefined) {
     ctx.response.status = 404;
-    ctx.response.body = { msg: "Page Not Found" };
+    ctx.response.headers.set("Content-Type", "text/html; charset=utf-8");
+    ctx.response.body = await renderFileToString(
+      `${Deno.cwd()}/public/404.ejs`,
+      {},
+    );
     return;
   }
   const page_id = page_id_raw.substring(1);
@@ -126,13 +131,15 @@ export const userhome = async (ctx: RouterContext) => {
 
   if ((page_id as string) === cookie_id) {
     const posts = (await dbaccesspost(cookie_id)).rows.reverse();
+    const username = (await dbgetusername(cookie_id)).rows;
     
-    if(posts != null){
+    if(posts != null && username != null){
     ctx.response.body = await renderFileToString(
       `${Deno.cwd()}/public/userhome.ejs`,
       {
         error: false,
         posts:posts,
+        username:username,
       },
     );
     }else{
@@ -145,7 +152,11 @@ export const userhome = async (ctx: RouterContext) => {
     }
   } else {
     ctx.response.status = 404;
-    ctx.response.body = { msg: "access denied" };
+    ctx.response.headers.set("Content-Type", "text/html; charset=utf-8");
+    ctx.response.body = await renderFileToString(
+      `${Deno.cwd()}/public/404.ejs`,
+      {},
+    );
     return;
   }
 };
@@ -154,11 +165,10 @@ export const createpost = async (ctx: RouterContext) => {
   const cookie_id = ctx.cookies.get("user");
 
   if (cookie_id === undefined) {
+    ctx.response.headers.set("Content-Type", "text/html; charset=utf-8");
     ctx.response.body = await renderFileToString(
-      `${Deno.cwd()}/public/login.ejs`,
-      {
-        error: "please login to access this page",
-      },
+      `${Deno.cwd()}/public/404.ejs`,
+      {},
     );
   }
 
@@ -178,7 +188,7 @@ export const createpost = async (ctx: RouterContext) => {
   const content = decoder.decode(await Deno.readAll(file));
 
   const p: Post = {
-    post_id: 0,
+    post_id: undefined,
     author_id: author_id,
     title: title,
     content: content,
@@ -191,9 +201,54 @@ export const createpost = async (ctx: RouterContext) => {
 
   } else {
     ctx.response.status = 500;
-    ctx.response.body = { msg: "post creation failed" };
+    ctx.response.body = "post creation failed";
     return;
   }
+};
+
+export const deletepost = async (ctx: RouterContext) => {
+  
+  const cookie_id = ctx.cookies.get("user");
+
+  if (cookie_id === undefined) {
+    ctx.response.status = 404;
+    ctx.response.headers.set("Content-Type", "text/html; charset=utf-8");
+    ctx.response.body = await renderFileToString(
+      `${Deno.cwd()}/public/404.ejs`,
+      {},
+    );
+    return;
+  }
+  const formdata = await ctx.request.body({ type: "form" });
+  const values = await formdata.value;
+
+  const toDelete = values.get("delete");
+  const user_id_check = (await dbcheckpostbelongstouser(toDelete as string)).rows as unknown; //checks the post submitted for deleteion with the user id stored in the cookie
+  console.log(user_id_check + " " + cookie_id);
+  if(user_id_check != null && +(cookie_id as string) === +(user_id_check as string)){
+    if (await dbdeletepost(toDelete as string)) {
+      console.log("post deleted");
+      ctx.response.redirect("/user/:"+cookie_id);
+  
+  
+    } else {
+      ctx.response.status = 500;
+      ctx.response.body = "post deletion failed";
+      return;
+    }
+
+  }else{
+
+    ctx.response.status = 500;
+    ctx.response.headers.set("Content-Type", "text/html; charset=utf-8");
+    ctx.response.body = await renderFileToString(
+      `${Deno.cwd()}/public/404.ejs`,
+      {},
+    );
+    return;
+
+  }
+ 
 };
 
 export const logout = async (ctx: RouterContext) => {

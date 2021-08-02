@@ -17,11 +17,12 @@ export const dbregister = async (username: string, hashed_password: string) => {
   try {
     const client = await pool.connect();
     const result = await client.queryArray(
-      "INSERT INTO users (username, password, bio, socials) VALUES ($1, $2, $3, $4)", // registers username and password, leaves bio and socials empty for now
+      "INSERT INTO users (username, password, bio, socials,imagepath) VALUES ($1, $2, $3, $4, $5)", // registers username and password, leaves bio and socials empty for now
       username,
       hashed_password,
       "",
       [],
+      "",
     );
 
     console.log(result + " huh?");
@@ -73,12 +74,12 @@ export const dbcheckpostbelongstouser = async (post_id: string) => {
 
 };
 
-export const dbedituserprofile = async (bio:string,socials: Array<String>,user_id:string) => {
+export const dbedituserprofile = async (bio:string,socials:string[],imagepath:string,user_id:string) => {
  
   const client = await pool.connect();
   const result = await client.queryArray(
-    "UPDATE users SET (bio, socials,VALUES ($1, $2)) where user_id =$3",
-    bio,socials,user_id
+    "UPDATE users SET bio = $1, socials =$2,imagepath=$3 where id =$4",
+    bio,socials,imagepath,user_id
   ); // updates bio and socials
 
   client.release();
@@ -93,7 +94,7 @@ export const dbaccesspost = async (user_id: string) => {
     const result = await client.queryArray(
       "Select * from  posts where author_id =$1",
       user_id
-    ); // queries password from username
+    ); // queries post info from user id
 
     client.release();
     return result;

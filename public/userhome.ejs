@@ -109,11 +109,14 @@
     }
 
     function html_profile(){
-        return '<div class="create_post">\
+        return '<div class="edit profile">\
             <h2>Edit Your Profile</h2>\
-            <form enctype="multipart/form-data" action="/create_post" method="POST">\
+            <form enctype="multipart/form-data" action="/edit_profile" method="POST">\
                 <br>\
                 <label>Bio: <input type="text" name="bio"></label>\
+                <br>\
+                <br>\
+                <label>Profile Pic: <input type="file" name="profile-pic" accept=".png,.jpg"></label>\
                 <br>\
                 <label>Instagram: <input type="text" name="instagram" /></label>\
                 <br>\

@@ -38,8 +38,8 @@
             <div class="dropdown text-end">
               <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                 <!-- Edit here for usename -->
-                <% if (posts) { %>
-                    <%= username %>
+                <% if (userdetails) { %>
+                    <%= userdetails[1] %> 
 
                     <% } %>
                 
@@ -96,8 +96,11 @@
                         <td><form id ="delete" action="/delete_post" method="post"><button type = submit value=<%=posts[i][0] %> name ="delete"> delete </button></form></td>\
                     </tr>\
                     <% } %>\
-            <% } %>\
-            </table>'
+            </table>\
+            <% if (userdetails) { %>\
+            <a href=<%="/blog/:" + userdetails[0] %>>Your blog</>\
+             <% } %>\
+            <% } %>'
     }
     function html_upload(){
         return '<h2>Upload Markdown Files</h2>\
@@ -111,21 +114,27 @@
     function html_profile(){
         return '<div class="edit profile">\
             <h2>Edit Your Profile</h2>\
+            <% if (userdetails) { %>\
             <form enctype="multipart/form-data" action="/edit_profile" method="POST">\
                 <br>\
-                <label>Bio: <input type="text" name="bio"></label>\
-                <br>\
-                <br>\
                 <label>Profile Pic: <input type="file" name="profile-pic" accept=".png,.jpg"></label>\
+                <img src=<%= "/public/userprofile/" +userdetails[4] %> alt ="your profile pic" width ="200" height ="200">\
                 <br>\
-                <label>Instagram: <input type="text" name="instagram" /></label>\
                 <br>\
-                <label>Twitter: <input type="text" name="twitter" /></label>\
+                <label>Bio: <input type="text" name="bio" value="<%= userdetails[2]%>"/></label>\
                 <br>\
-                <label>Github: <input type="text" name="github" /></label>\
+                <label>Instagram: <input type="text" name="instagram" value=<%= userdetails[3][0] %> /></label>\
+                <br>\
+                <label>Twitter: <input type="text" name="twitter" value=<%= userdetails[3][1] %>  /></label>\
+                <br>\
+                <label>Github: <input type="text" name="github" value=<%= userdetails[3][2] %> /></label>\
                 <br><br>\
                 <label><input type="submit" value="Update" /></label>\
+                <% } %>\
             </form>\
+            <% if (userdetails) { %>\
+            <a href=<%="/profile/:" + userdetails[0] %>>Your profile</>\
+             <% } %>\
             </div>'
     }
 

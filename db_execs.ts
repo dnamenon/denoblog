@@ -1,7 +1,7 @@
 import { Client, Pool } from "https://deno.land/x/postgres/mod.ts";
 import { Post } from "./post.ts";
 
-const pool = new Pool(
+const pool = new Pool( // creates a pool of asynchronous connections to the postgres database
   {
     user: "denouser",
     database: "creative_project",
@@ -21,7 +21,7 @@ export const dbregister = async (username: string, hashed_password: string) => {
       username,
       hashed_password,
       "",
-      [],
+      ["","",""],
       "",
     );
 
@@ -36,33 +36,28 @@ export const dbregister = async (username: string, hashed_password: string) => {
 };
 
 export const dblogin = async (username: string) => {
- 
-    const client = await pool.connect();
-    const result = await client.queryArray(
-      "Select password,id from  users where username =$1",
-      username,
-    ); // queries password from username
-
-    client.release();
-    return result;
-
-};
-
-export const dbgetusername = async (id: string) => {
- 
   const client = await pool.connect();
   const result = await client.queryArray(
-    "Select username from  users where id =$1",
+    "Select password,id from  users where username =$1",
+    username,
+  ); // queries password from username
+
+  client.release();
+  return result;
+};
+
+export const dbgetuserdetails = async (id: string) => {
+  const client = await pool.connect();
+  const result = await client.queryArray(
+    "Select id,username,bio,socials,imagepath from  users where id =$1",
     id,
   ); // queries username from userid
 
   client.release();
   return result;
-
 };
 
 export const dbcheckpostbelongstouser = async (post_id: string) => {
- 
   const client = await pool.connect();
   const result = await client.queryArray(
     "Select author_id from posts where post_id =$1",
@@ -71,34 +66,36 @@ export const dbcheckpostbelongstouser = async (post_id: string) => {
 
   client.release();
   return result;
-
 };
 
-export const dbedituserprofile = async (bio:string,socials:string[],imagepath:string,user_id:string) => {
- 
+export const dbedituserprofile = async (
+  bio: string,
+  socials: string[],
+  imagepath: string,
+  user_id: string,
+) => {
   const client = await pool.connect();
   const result = await client.queryArray(
     "UPDATE users SET bio = $1, socials =$2,imagepath=$3 where id =$4",
-    bio,socials,imagepath,user_id
+    bio,
+    socials,
+    imagepath,
+    user_id,
   ); // updates bio and socials
 
   client.release();
   return result;
-
 };
 
-
 export const dbaccesspost = async (user_id: string) => {
+  const client = await pool.connect();
+  const result = await client.queryArray(
+    "Select * from  posts where author_id =$1",
+    user_id,
+  ); // queries post info from user id
 
-    const client = await pool.connect();
-    const result = await client.queryArray(
-      "Select * from  posts where author_id =$1",
-      user_id
-    ); // queries post info from user id
-
-    client.release();
-    return result;
-
+  client.release();
+  return result;
 };
 
 export const dbcreatepost = async (p: Post) => {
@@ -121,13 +118,11 @@ export const dbcreatepost = async (p: Post) => {
 };
 
 export const dbdeletepost = async (postid: string) => {
- 
-    const client = await pool.connect();
-    const result = await client.queryArray(
-      "DELETE from posts where post_id =$1",
-      postid,
-    ); // deletes post
-    client.release();
-    return result;
-  
+  const client = await pool.connect();
+  const result = await client.queryArray(
+    "DELETE from posts where post_id =$1",
+    postid,
+  ); // deletes post
+  client.release();
+  return result;
 };

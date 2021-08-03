@@ -129,7 +129,7 @@ export const userhome = async (ctx: RouterContext) => {
   const page_id = page_id_raw.substring(1);
   const cookie_id = ctx.cookies.get("user");
 
-  if (cookie_id === undefined) { // checks if user is signed in//
+  if (cookie_id === undefined) { // checks if user is signed in
     ctx.response.body = await renderFileToString(
       `${Deno.cwd()}/public/login.ejs`,
       {
@@ -152,7 +152,7 @@ export const userhome = async (ctx: RouterContext) => {
         },
       );
     } else {
-      ctx.response.body = await renderFileToString(
+      ctx.response.body = await renderFileToString( // if user data is inaccessible
         `${Deno.cwd()}/public/userhome.ejs`,
         {
           error: "can't render user data",
@@ -173,7 +173,7 @@ export const userhome = async (ctx: RouterContext) => {
 export const createpost = async (ctx: RouterContext) => { // handles post request containing mark down file and enters post data into the databse
   const cookie_id = ctx.cookies.get("user");
 
-  if (cookie_id === undefined) {
+  if (cookie_id === undefined) { //checks if user is signed in
     ctx.response.headers.set("Content-Type", "text/html; charset=utf-8");
     ctx.response.body = await renderFileToString(
       `${Deno.cwd()}/public/404.ejs`,
@@ -181,7 +181,7 @@ export const createpost = async (ctx: RouterContext) => { // handles post reques
     );
   }
 
-  const formdata = await ctx.request.body({ type: "form-data" });
+  const formdata = await ctx.request.body({ type: "form-data" }); // gets post data from form
   const values = await formdata.value.read();
   const date = new Date().toLocaleString();
   const author_id = cookie_id as string;
@@ -199,7 +199,7 @@ export const createpost = async (ctx: RouterContext) => { // handles post reques
 
   
 
-  const file = await Deno.open(content_file as string);
+  const file = await Deno.open(content_file as string); // decodes user .md file and converts to texts
   const decoder = new TextDecoder("utf-8");
   const content = decoder.decode(await Deno.readAll(file));
 
@@ -210,7 +210,7 @@ export const createpost = async (ctx: RouterContext) => { // handles post reques
   }
 
   file.close();
-  await Deno.remove(content_file as string);
+  await Deno.remove(content_file as string); //removes temporary file created on upload
 
   const p: Post = {
     post_id: undefined,
@@ -219,7 +219,7 @@ export const createpost = async (ctx: RouterContext) => { // handles post reques
     content: content,
     published: date,
   };
-  if (await dbcreatepost(p)) {
+  if (await dbcreatepost(p)) { // submits post info to database
     console.log("post created");
     ctx.response.redirect("/user/:" + cookie_id);
   } else {
@@ -232,7 +232,7 @@ export const createpost = async (ctx: RouterContext) => { // handles post reques
 export const deletepost = async (ctx: RouterContext) => { // takes post request and deletes specified post id
   const cookie_id = ctx.cookies.get("user");
 
-  if (cookie_id === undefined) {
+  if (cookie_id === undefined) { // checks if user is signed in
     ctx.response.status = 404;
     ctx.response.headers.set("Content-Type", "text/html; charset=utf-8");
     ctx.response.body = await renderFileToString(
@@ -241,7 +241,7 @@ export const deletepost = async (ctx: RouterContext) => { // takes post request 
     );
     return;
   }
-  const formdata = await ctx.request.body({ type: "form" });
+  const formdata = await ctx.request.body({ type: "form" }); // gets  id  of post to delete from form
   const values = await formdata.value;
 
   const toDelete = values.get("delete");
@@ -250,9 +250,9 @@ export const deletepost = async (ctx: RouterContext) => { // takes post request 
   console.log(user_id_check + " " + cookie_id);
   if (
     user_id_check != null &&
-    +(cookie_id as string) === +(user_id_check as string) //checks the post submitted for deleteion belong to user  with the user id stored in the cookie
+    +(cookie_id as string) === +(user_id_check as string) //checks the post submitted for deletion belong to user  with the user id stored in the cookie
   ) {
-    if (await dbdeletepost(toDelete as string)) {
+    if (await dbdeletepost(toDelete as string)) { // delete post from database
       console.log("post deleted");
       ctx.response.redirect("/user/:" + cookie_id);
     } else {
@@ -274,7 +274,7 @@ export const deletepost = async (ctx: RouterContext) => { // takes post request 
 export const editprofile = async (ctx: RouterContext) => { // takes post request and edits user profile details
   const cookie_id = ctx.cookies.get("user");
 
-  if (cookie_id === undefined) {
+  if (cookie_id === undefined) { // checks if user is signed in
     ctx.response.status = 404;
     ctx.response.headers.set("Content-Type", "text/html; charset=utf-8");
     ctx.response.body = await renderFileToString(
@@ -289,14 +289,14 @@ export const editprofile = async (ctx: RouterContext) => { // takes post request
   const file_info = values.files;
 
   if (
-    file_info === undefined || file_info[0] === undefined ||
+    file_info === undefined || file_info[0] === undefined || // checks if image file is submitted
     file_info[0].filename === undefined
   ) {
     ctx.response.status = 500;
     ctx.response.body = "post creation failed";
     return;
   }
-  const content_file = file_info[0].filename;
+  const content_file = file_info[0].filename; // collecting data from form
   const bio = values.fields.bio;
   const insta = values.fields.instagram;
   const twitter = values.fields.twitter;
@@ -310,14 +310,14 @@ export const editprofile = async (ctx: RouterContext) => { // takes post request
   const newfilename = cookie_id + "." + ext;
 
   if (await dbedituserprofile(bio, socials, newfilename, cookie_id)) { // submits user info to database stores user profile pic to userpofile directory
-    await ensureFile(newfilepath);
+    await ensureFile(newfilepath);// saves user file to userprofile directory//
 
     await copy(content_file, newfilepath, {
       overwrite: true,
     });
     await Deno.remove(content_file as string);
     console.log("profile edited");
-    ctx.response.redirect("/profile/:" + cookie_id);
+    ctx.response.redirect("/profile/:" + cookie_id); // redirects user to their profiles
   } else {
     ctx.response.status = 500;
     ctx.response.body = "profile edit failed";
@@ -344,7 +344,7 @@ export const blog = async (ctx: RouterContext) => {
     if (posts != null && userdetails != null) {
       for (let i = 0; i < posts.length; i++) {
 
-        let parsed = Marked.parse(posts[i][3] as string);
+        let parsed = Marked.parse(posts[i][3] as string); // parses markdown and renders to html
         let unescaped = unescapeHtml(parsed.content);
         posts[i][3] = unescaped;
       }
@@ -352,7 +352,7 @@ export const blog = async (ctx: RouterContext) => {
       ctx.response.body = await renderFileToString(
         `${Deno.cwd()}/public/blog.ejs`,
         {
-          error: false,
+          error: false,   // passes post and user details to templat
           posts: posts,
           userdetails: userdetails[0],
         },
@@ -387,7 +387,7 @@ export const profile = async (ctx: RouterContext) => {
       ctx.response.body = await renderFileToString(
         `${Deno.cwd()}/public/profile.ejs`,
         {
-          error: false,
+          error: false,  // passes post and user details to tempate
           userdetails: userdetails[0],
         },
       );
@@ -395,7 +395,7 @@ export const profile = async (ctx: RouterContext) => {
       ctx.response.body = await renderFileToString(
         `${Deno.cwd()}/public/profile.ejs`,
         {
-          error: "can't render user data",
+          error: "can't render user data", // if accessing db failes
         },
       );
     }

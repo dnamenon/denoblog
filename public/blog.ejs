@@ -39,10 +39,10 @@
                 </div>
          <% } %>
          <h2> Posts </h2>
-                    <table class="blog-postlist">
+                    <div class="blog-post">
                         <% if (posts) { %>
                             <% for(var i=0; i < posts.length; i++) { %>\
-                                <tr>
+                             
                                     
                         
                                     
@@ -50,13 +50,13 @@
                                             </h5>
 
 
-                                            <p>
+                                          
                                                 <%- posts[i][3] %>
-                                            </p>
-                                </tr>
+                                            
+                               
                                 <% } %>
                             <% } %>
-                    </table>
+                            </div>
 
 
 </body>

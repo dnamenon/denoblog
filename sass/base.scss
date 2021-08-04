@@ -42,3 +42,41 @@ body {
     }
   }
 }
+
+
+.edit_profile{
+  text-align: center;
+}
+
+.blog-post{
+  font: $font-stack;
+  color: $primary-color;
+  font-weight: lighter;
+  h2{
+    font: $font-stack;
+    font-size: normal;
+    font-weight:normal;
+  }
+  h5{
+    font-size: 12px;
+    display: inline;
+    color: #a5a5a5;
+  }
+  h4{
+    font-size: 13px;
+    display: inline;
+    font-weight: normal;
+  color: #000000;
+  }
+  h3{
+    font-size: 14px;
+    display: inline;
+    font-weight: normal;
+  color: #000000;
+  }
+}
+
+.blog_profile{
+  text-align: center;
+}
+.remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }

@@ -141,6 +141,13 @@ export const userhome = async (ctx: RouterContext) => {
   if ((page_id as string) === cookie_id) { // checks if this is the signed in user's homepage
     const posts = (await dbaccesspost(cookie_id)).rows.reverse(); // gets post and user details from the database
     const userdetails = (await dbgetuserdetails(cookie_id)).rows;
+
+    for (let i = 0; i < posts.length; i++) {
+
+      let parsed = Marked.parse(posts[i][3] as string); // parses markdown and renders to html
+      let unescaped = unescapeHtml(parsed.content);
+      posts[i][3] = unescaped;
+    }
       
     if (posts != null && userdetails != null) {
       ctx.response.body = await renderFileToString(

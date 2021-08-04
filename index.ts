@@ -37,7 +37,7 @@ router // directs routes to handlers
   .get("/public/css/:path+", staticfiles)
   .get("/public/userprofile/:path+", staticfiles);
 
-app.addEventListener("error", (evt) => {
+app.addEventListener("error", (evt) => { // logs errors to console
   console.log(evt.error);
 });
 
